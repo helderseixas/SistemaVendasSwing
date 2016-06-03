@@ -5,12 +5,16 @@
  */
 package br.edu.ifnmg.sistemavendas.apresentacao;
 
+import br.edu.ifnmg.sistemavendas.entidade.FormaPagamento;
 import br.edu.ifnmg.sistemavendas.entidade.Venda;
 import br.edu.ifnmg.sistemavendas.negocio.VendaBO;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,6 +23,7 @@ import java.util.Date;
 public class CadastroVendaForm extends javax.swing.JFrame {
 
     private Venda venda;
+    private List<FormaPagamento> listaFormaPagamento;
     
     /**
      * Creates new form CadastroVendaForm
@@ -26,6 +31,27 @@ public class CadastroVendaForm extends javax.swing.JFrame {
     public CadastroVendaForm() {
         venda = new Venda();
         initComponents();
+        this.preencherCmbFormaPagamento();
+    }
+    
+    private void preencherCmbFormaPagamento(){
+        this.listaFormaPagamento = new ArrayList<>();
+        
+        FormaPagamento dinheiro = new FormaPagamento("AV", "Dinheiro");
+        FormaPagamento cartaoCredito = new FormaPagamento("CC", "Cartão de Crédito");
+        FormaPagamento cartaoDebito = new FormaPagamento("CD", "Cartão de Débito");
+        FormaPagamento cheque = new FormaPagamento("CH", "Cheque");
+        
+        this.listaFormaPagamento.add(dinheiro);
+        this.listaFormaPagamento.add(cartaoCredito);
+        this.listaFormaPagamento.add(cartaoDebito);
+        this.listaFormaPagamento.add(cheque);
+        
+        this.cmbFormaPagamento.addItem("Selecione");
+        
+        for (FormaPagamento formaPagamento : listaFormaPagamento) {
+            this.cmbFormaPagamento.addItem(formaPagamento.getDescricao());
+        }
     }
 
     /**
@@ -89,8 +115,6 @@ public class CadastroVendaForm extends javax.swing.JFrame {
         lblValor.setText("Valor:");
 
         txtValor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-
-        cmbFormaPagamento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblObservacao.setText("Observação:");
 
@@ -201,14 +225,37 @@ public class CadastroVendaForm extends javax.swing.JFrame {
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         try{
             this.recuperarCamposTela();
+            
             VendaBO vendaBO = new VendaBO();
             vendaBO.inserir(venda);
+            
+            JOptionPane.showMessageDialog(this, 
+                    "Venda realizada com sucesso!",
+                    "Cadastro de venda", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            
+            this.limparCamposTela();
         }catch(Exception e){
             System.out.println("Erro inesperado! Informe a mensagem de erro ao administrador do sistema.");
-                e.printStackTrace(System.out);
+            e.printStackTrace(System.out);
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Erro inesperado! Informe o erro ao administrador do sistema",
+                    "Cadastro de venda",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }        
     }//GEN-LAST:event_btnSalvarActionPerformed
 
+    private void limparCamposTela(){
+        this.txtAreaObservacao.setText("");
+        this.txtCPF.setText("");
+        this.txtData.setText("");
+        this.txtNomeCliente.setText("");
+        this.txtNumero.setText("");
+        this.txtValor.setText("");
+    }
+    
     private void recuperarCamposTela() throws ParseException{
         String numero = txtNumero.getText().trim();
         venda.setNumero(Integer.parseInt(numero));
@@ -224,7 +271,17 @@ public class CadastroVendaForm extends javax.swing.JFrame {
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         venda.setValor(decimalFormat.parse(valor).doubleValue());
         
-        venda.setFormaPagamento("AV");
+        int posicaoSelecionada = 
+                this.cmbFormaPagamento.getSelectedIndex();
+        
+        if(posicaoSelecionada > 0){
+            FormaPagamento formaPagamento = 
+                    this.listaFormaPagamento.get(posicaoSelecionada -1);
+            venda.setFormaPagamento(formaPagamento.getCodigo());
+        }else{
+            venda.setFormaPagamento("");
+        }
+                
         venda.setObservacao(txtAreaObservacao.getText());        
     }
     
