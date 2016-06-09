@@ -6,6 +6,8 @@
 package br.edu.ifnmg.sistemavendas.negocio;
 
 import br.edu.ifnmg.sistemavendas.entidade.Venda;
+import br.edu.ifnmg.sistemavendas.excecao.ValorVendaCartaoCreditoInvalidoException;
+import br.edu.ifnmg.sistemavendas.excecao.ValorVendaInvalidoException;
 import br.edu.ifnmg.sistemavendas.persistencia.VendaDAO;
 import java.sql.SQLException;
 
@@ -16,7 +18,15 @@ import java.sql.SQLException;
 public class VendaBO {
     
     public void inserir(Venda venda) throws SQLException{
-        //Colocar todas as regras de negócio - Fazer depois
+        if(venda.getValor()<=0){
+            throw new ValorVendaInvalidoException();
+        }
+        
+        if(venda.getFormaPagamento().equals("CC") &&
+                venda.getValor()<50.0){
+            throw new ValorVendaCartaoCreditoInvalidoException();
+        }
+        
         VendaDAO vendaDAO = new VendaDAO();
         vendaDAO.inserir(venda);
     }

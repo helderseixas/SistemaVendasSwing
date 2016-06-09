@@ -7,6 +7,8 @@ package br.edu.ifnmg.sistemavendas.apresentacao;
 
 import br.edu.ifnmg.sistemavendas.entidade.FormaPagamento;
 import br.edu.ifnmg.sistemavendas.entidade.Venda;
+import br.edu.ifnmg.sistemavendas.excecao.CampoObrigatorioException;
+import br.edu.ifnmg.sistemavendas.excecao.SistemaVendaException;
 import br.edu.ifnmg.sistemavendas.negocio.VendaBO;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -24,7 +26,7 @@ public class CadastroVendaForm extends javax.swing.JFrame {
 
     private Venda venda;
     private List<FormaPagamento> listaFormaPagamento;
-    
+
     /**
      * Creates new form CadastroVendaForm
      */
@@ -33,22 +35,22 @@ public class CadastroVendaForm extends javax.swing.JFrame {
         initComponents();
         this.preencherCmbFormaPagamento();
     }
-    
-    private void preencherCmbFormaPagamento(){
+
+    private void preencherCmbFormaPagamento() {
         this.listaFormaPagamento = new ArrayList<>();
-        
+
         FormaPagamento dinheiro = new FormaPagamento("AV", "Dinheiro");
         FormaPagamento cartaoCredito = new FormaPagamento("CC", "Cartão de Crédito");
         FormaPagamento cartaoDebito = new FormaPagamento("CD", "Cartão de Débito");
         FormaPagamento cheque = new FormaPagamento("CH", "Cheque");
-        
+
         this.listaFormaPagamento.add(dinheiro);
         this.listaFormaPagamento.add(cartaoCredito);
         this.listaFormaPagamento.add(cartaoDebito);
         this.listaFormaPagamento.add(cheque);
-        
+
         this.cmbFormaPagamento.addItem("Selecione");
-        
+
         for (FormaPagamento formaPagamento : listaFormaPagamento) {
             this.cmbFormaPagamento.addItem(formaPagamento.getDescricao());
         }
@@ -80,6 +82,7 @@ public class CadastroVendaForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaObservacao = new javax.swing.JTextArea();
         btnSalvar = new javax.swing.JButton();
+        lblCampoObrigatorio = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastro de Venda");
@@ -87,19 +90,19 @@ public class CadastroVendaForm extends javax.swing.JFrame {
 
         pnlDadosVenda.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados da venda"));
 
-        lblFormaPagamento.setText("Forma de pagamento:");
+        lblFormaPagamento.setText("Forma de pagamento*:");
 
-        lblNumero.setText("Número:");
+        lblNumero.setText("Número*:");
 
         txtNumero.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
 
-        lblData.setText("Data:");
+        lblData.setText("Data*:");
 
         txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
 
-        lblCliente.setText("Nome do cliente:");
+        lblCliente.setText("Nome do cliente*:");
 
-        lblCPF.setText("CPF do cliente:");
+        lblCPF.setText("CPF do cliente*:");
 
         try {
             txtCPF.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###.###.###-##")));
@@ -112,7 +115,7 @@ public class CadastroVendaForm extends javax.swing.JFrame {
             }
         });
 
-        lblValor.setText("Valor:");
+        lblValor.setText("Valor*:");
 
         txtValor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
 
@@ -129,6 +132,8 @@ public class CadastroVendaForm extends javax.swing.JFrame {
                 btnSalvarActionPerformed(evt);
             }
         });
+
+        lblCampoObrigatorio.setText("*Campos de preencimento obrigatório.");
 
         javax.swing.GroupLayout pnlDadosVendaLayout = new javax.swing.GroupLayout(pnlDadosVenda);
         pnlDadosVenda.setLayout(pnlDadosVendaLayout);
@@ -156,7 +161,8 @@ public class CadastroVendaForm extends javax.swing.JFrame {
                             .addComponent(cmbFormaPagamento, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDadosVendaLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblCampoObrigatorio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSalvar)))
                 .addContainerGap())
         );
@@ -190,11 +196,16 @@ public class CadastroVendaForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlDadosVendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlDadosVendaLayout.createSequentialGroup()
-                        .addComponent(lblObservacao)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSalvar)
+                        .addGroup(pnlDadosVendaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlDadosVendaLayout.createSequentialGroup()
+                                .addComponent(lblObservacao)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSalvar))
+                    .addGroup(pnlDadosVendaLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblCampoObrigatorio)))
                 .addContainerGap())
         );
 
@@ -223,31 +234,39 @@ public class CadastroVendaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCPFActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        try{
+        try {
             this.recuperarCamposTela();
-            
+
             VendaBO vendaBO = new VendaBO();
             vendaBO.inserir(venda);
-            
-            JOptionPane.showMessageDialog(this, 
+
+            JOptionPane.showMessageDialog(this,
                     "Venda realizada com sucesso!",
-                    "Cadastro de venda", 
+                    "Cadastro de venda",
                     JOptionPane.INFORMATION_MESSAGE);
-            
+
             this.limparCamposTela();
-        }catch(Exception e){
+        }catch(SistemaVendaException e){
+            JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage(),
+                    "Cadastro de venda",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+        catch (Exception e) {
             System.out.println("Erro inesperado! Informe a mensagem de erro ao administrador do sistema.");
             e.printStackTrace(System.out);
             JOptionPane.showMessageDialog(
-                    this, 
+                    this,
                     "Erro inesperado! Informe o erro ao administrador do sistema",
                     "Cadastro de venda",
                     JOptionPane.ERROR_MESSAGE
             );
-        }        
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
-    private void limparCamposTela(){
+    private void limparCamposTela() {
         this.txtAreaObservacao.setText("");
         this.txtCPF.setText("");
         this.txtData.setText("");
@@ -255,36 +274,57 @@ public class CadastroVendaForm extends javax.swing.JFrame {
         this.txtNumero.setText("");
         this.txtValor.setText("");
     }
-    
-    private void recuperarCamposTela() throws ParseException{
+
+    private void recuperarCamposTela() throws ParseException {
         String numero = txtNumero.getText().trim();
-        venda.setNumero(Integer.parseInt(numero));
-        
-        SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
-        Date data = formatador.parse(txtData.getText().trim());
-        venda.setData(data);
-        
-        venda.setNomeCliente(txtNomeCliente.getText().trim());
-        venda.setCpfCliente(txtCPF.getText().trim());
-        
-        String valor = txtValor.getText();
-        DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        venda.setValor(decimalFormat.parse(valor).doubleValue());
-        
-        int posicaoSelecionada = 
-                this.cmbFormaPagamento.getSelectedIndex();
-        
-        if(posicaoSelecionada > 0){
-            FormaPagamento formaPagamento = 
-                    this.listaFormaPagamento.get(posicaoSelecionada -1);
-            venda.setFormaPagamento(formaPagamento.getCodigo());
-        }else{
-            venda.setFormaPagamento("");
+        if (!numero.equals("")) {
+            venda.setNumero(Integer.parseInt(numero));
+        } else {
+            throw new CampoObrigatorioException();
         }
-                
-        venda.setObservacao(txtAreaObservacao.getText());        
+
+        if (!txtData.getText().trim().equals("")) {
+            SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+            Date data = formatador.parse(txtData.getText().trim());
+            venda.setData(data);
+        } else {
+            throw new CampoObrigatorioException();
+        }
+
+        if (!txtNomeCliente.getText().trim().equals("")) {
+            venda.setNomeCliente(txtNomeCliente.getText().trim());
+        } else {
+            throw new CampoObrigatorioException();
+        }
+
+        if (!txtCPF.getText().trim().equals("   .   .   -")) {
+            venda.setCpfCliente(txtCPF.getText().trim());
+        } else {
+            throw new CampoObrigatorioException();
+        }
+
+        String valor = txtValor.getText();
+        if (!valor.equals("")) {
+            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+            venda.setValor(decimalFormat.parse(valor).doubleValue());
+        }else{
+            throw new CampoObrigatorioException();
+        }
+
+        int posicaoSelecionada
+                = this.cmbFormaPagamento.getSelectedIndex();
+
+        if (posicaoSelecionada > 0) {
+            FormaPagamento formaPagamento
+                    = this.listaFormaPagamento.get(posicaoSelecionada - 1);
+            venda.setFormaPagamento(formaPagamento.getCodigo());
+        } else {
+            throw new CampoObrigatorioException();
+        }
+
+        venda.setObservacao(txtAreaObservacao.getText());
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -325,6 +365,7 @@ public class CadastroVendaForm extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbFormaPagamento;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCPF;
+    private javax.swing.JLabel lblCampoObrigatorio;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblData;
     private javax.swing.JLabel lblFormaPagamento;

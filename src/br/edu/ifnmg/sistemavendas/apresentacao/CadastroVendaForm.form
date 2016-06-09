@@ -80,7 +80,8 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="lblCampoObrigatorio" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnSalvar" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -124,13 +125,21 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="lblObservacao" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="lblObservacao" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="jScrollPane1" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnSalvar" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane1" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="lblCampoObrigatorio" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnSalvar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -139,12 +148,12 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lblFormaPagamento">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Forma de pagamento:"/>
+            <Property name="text" type="java.lang.String" value="Forma de pagamento*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblNumero">
           <Properties>
-            <Property name="text" type="java.lang.String" value="N&#xfa;mero:"/>
+            <Property name="text" type="java.lang.String" value="N&#xfa;mero*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtNumero">
@@ -156,7 +165,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblData">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Data:"/>
+            <Property name="text" type="java.lang.String" value="Data*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtData">
@@ -168,14 +177,14 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblCliente">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Nome do cliente:"/>
+            <Property name="text" type="java.lang.String" value="Nome do cliente*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtNomeCliente">
         </Component>
         <Component class="javax.swing.JLabel" name="lblCPF">
           <Properties>
-            <Property name="text" type="java.lang.String" value="CPF do cliente:"/>
+            <Property name="text" type="java.lang.String" value="CPF do cliente*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtCPF">
@@ -190,7 +199,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblValor">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Valor:"/>
+            <Property name="text" type="java.lang.String" value="Valor*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtValor">
@@ -240,6 +249,11 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalvarActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblCampoObrigatorio">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="*Campos de preencimento obrigat&#xf3;rio."/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
