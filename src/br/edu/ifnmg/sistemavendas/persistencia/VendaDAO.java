@@ -8,7 +8,10 @@ package br.edu.ifnmg.sistemavendas.persistencia;
 import br.edu.ifnmg.sistemavendas.entidade.Venda;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,6 +22,7 @@ public class VendaDAO {
     private static final String INSERT = "INSERT INTO \"PUBLIC\".\"VENDA\"\n"
             + "( \"NUMERO\", \"DATA\", \"NOME_CLIENTE\", \"CPF_CLIENTE\", \"VALOR\", \"FORMA_PAGAMENTO\", \"OBSERVACAO\" )\n"
             + "VALUES ( ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_TODOS = "SELECT NUMERO, DATA, NOME_CLIENTE, CPF_CLIENTE, VALOR, FORMA_PAGAMENTO, OBSERVACAO FROM VENDA ORDER BY DATA DESC";
     
     public void inserir(Venda venda) throws SQLException{
         Connection conexao = null;
@@ -52,6 +56,38 @@ public class VendaDAO {
             //Todo objeto que referencie o banco de dados deve ser fechado
             BancoDadosUtil.fecharChamadasBancoDados(conexao, comando);
         }
+    }
+    
+    public List<Venda> buscarTodos() throws SQLException{
+        List<Venda> listaVendas = new ArrayList<>();
+        Connection conexao = null;
+        PreparedStatement comando = null;
+        ResultSet resultado = null;
+        try{
+            conexao = BancoDadosUtil.getConnection();
+            comando = conexao.prepareStatement(SELECT_TODOS);
+            resultado = comando.executeQuery();
+            
+            while(resultado.next()){
+                Venda venda = new Venda();
+                
+                venda.setNumero(resultado.getInt(1));
+                venda.setData(resultado.getTimestamp(2));
+                venda.setNomeCliente(resultado.getString(3));
+                venda.setCpfCliente(resultado.getString(4));
+                venda.setValor(resultado.getDouble(5));
+                venda.setFormaPagamento(resultado.getString(6));
+                venda.setObservacao(resultado.getString(7));
+                
+                listaVendas.add(venda);
+            }
+            
+        }finally {
+            //Todo objeto que referencie o banco de dados deve ser fechado
+            BancoDadosUtil.fecharChamadasBancoDados(conexao, comando);
+        }
+        
+        return listaVendas;
     }
 
 }

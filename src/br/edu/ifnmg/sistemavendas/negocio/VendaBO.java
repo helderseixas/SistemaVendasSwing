@@ -10,6 +10,7 @@ import br.edu.ifnmg.sistemavendas.excecao.ValorVendaCartaoCreditoInvalidoExcepti
 import br.edu.ifnmg.sistemavendas.excecao.ValorVendaInvalidoException;
 import br.edu.ifnmg.sistemavendas.persistencia.VendaDAO;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -29,6 +30,11 @@ public class VendaBO {
         
         VendaDAO vendaDAO = new VendaDAO();
         vendaDAO.inserir(venda);
+    }
+    
+    public List<Venda> buscarTodos() throws SQLException{
+        VendaDAO vendaDAO = new VendaDAO();
+        return vendaDAO.buscarTodos();
     }
     
 }

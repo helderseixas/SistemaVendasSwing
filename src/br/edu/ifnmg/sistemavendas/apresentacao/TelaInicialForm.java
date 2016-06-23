@@ -52,6 +52,11 @@ public class TelaInicialForm extends javax.swing.JFrame {
         mnuVenda.add(itmVendaInserir);
 
         itmVendaConsultar.setText("Consultar");
+        itmVendaConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmVendaConsultarActionPerformed(evt);
+            }
+        });
         mnuVenda.add(itmVendaConsultar);
 
         mnuCadastro.add(mnuVenda);
@@ -85,6 +90,11 @@ public class TelaInicialForm extends javax.swing.JFrame {
                 new CadastroVendaForm();
         cadastroVendaForm.setVisible(true);
     }//GEN-LAST:event_itmVendaInserirActionPerformed
+
+    private void itmVendaConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmVendaConsultarActionPerformed
+        ConsultaVendasForm telaConsulta = new ConsultaVendasForm();
+        telaConsulta.setVisible(true);
+    }//GEN-LAST:event_itmVendaConsultarActionPerformed
 
     /**
      * @param args the command line arguments
