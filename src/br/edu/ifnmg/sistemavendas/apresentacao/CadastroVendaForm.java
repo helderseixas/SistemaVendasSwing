@@ -35,6 +35,41 @@ public class CadastroVendaForm extends javax.swing.JFrame {
         initComponents();
         this.preencherCmbFormaPagamento();
     }
+    
+    public CadastroVendaForm(Venda vendaConsultada){
+        venda = vendaConsultada;
+        initComponents();
+        this.preencherCmbFormaPagamento();
+        this.inicializarCamposTela();
+        this.bloquearCampoNumero();
+    }
+    
+    private void bloquearCampoNumero(){
+        this.txtNumero.setEnabled(false);
+    }
+    
+    private void inicializarCamposTela(){
+        this.txtNomeCliente.setText(this.venda.getNomeCliente());
+        this.txtAreaObservacao.setText(this.venda.getObservacao());
+        this.txtCPF.setText(this.venda.getCpfCliente());
+        
+        SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");        
+        this.txtData.setText(formatador.format(this.venda.getData()));
+        
+        this.txtNumero.setText(Integer.toString(this.venda.getNumero()));
+        
+        DecimalFormat formatadorDecimal = new DecimalFormat("#,##0.00");
+        this.txtValor.setText(
+                formatadorDecimal.format(this.venda.getValor()));
+        
+        for(int i=0; i<listaFormaPagamento.size(); i++){
+            FormaPagamento formaPagamento = listaFormaPagamento.get(i);
+            if(venda.getFormaPagamento().equals(formaPagamento.getCodigo())){
+                this.cmbFormaPagamento.setSelectedIndex(i+1);
+                break;
+            }
+        }
+    }
 
     private void preencherCmbFormaPagamento() {
         this.listaFormaPagamento = new ArrayList<>();

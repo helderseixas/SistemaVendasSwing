@@ -21,28 +21,27 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ConsultaVendasForm extends javax.swing.JFrame {
 
-    private List<Venda>  listaVendas;
-    
+    private List<Venda> listaVendas;
+
     /**
      * Creates new form ConsultaVendasForm
      */
     public ConsultaVendasForm() {
-        prepararTela();        
+        prepararTela();
     }
-    
-    private void prepararTela(){
-        try{
+
+    private void prepararTela() {
+        try {
             initComponents();
             carregarTabelaVendas();
-        }catch(SistemaVendaException e){
+        } catch (SistemaVendaException e) {
             JOptionPane.showMessageDialog(
                     this,
                     e.getMessage(),
                     "Consulta de venda",
                     JOptionPane.ERROR_MESSAGE
             );
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Erro inesperado! Informe a mensagem de erro ao administrador do sistema.");
             e.printStackTrace(System.out);
             JOptionPane.showMessageDialog(
@@ -53,11 +52,11 @@ public class ConsultaVendasForm extends javax.swing.JFrame {
             );
         }
     }
-    
-    private void carregarTabelaVendas() throws SQLException{
+
+    private void carregarTabelaVendas() throws SQLException {
         VendaBO vendaBO = new VendaBO();
         listaVendas = vendaBO.buscarTodos();
-        
+
         ModeloTabelaVenda modelo = new ModeloTabelaVenda();
         tblVendasEncontradas.setModel(modelo);
     }
@@ -192,9 +191,19 @@ public class ConsultaVendasForm extends javax.swing.JFrame {
 
         btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/ifnmg/sistemavendas/apresentacao/imagens/1465510171_Delete.png"))); // NOI18N
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/edu/ifnmg/sistemavendas/apresentacao/imagens/1465510188_Edit.png"))); // NOI18N
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         tblVendasEncontradas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -207,6 +216,7 @@ public class ConsultaVendasForm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblVendasEncontradas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(tblVendasEncontradas);
 
         javax.swing.GroupLayout pnlVendasEncontradasLayout = new javax.swing.GroupLayout(pnlVendasEncontradas);
@@ -259,6 +269,58 @@ public class ConsultaVendasForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        int linhaSelecionada = tblVendasEncontradas.getSelectedRow();
+
+        try {
+            Venda vendaSelecionada = listaVendas.get(linhaSelecionada);
+
+            String mensagem = "Realmente deseja excluir a venda número "
+                    + vendaSelecionada.getNumero() + "?";
+
+            int opcao
+                    = JOptionPane.showConfirmDialog(this,
+                            mensagem,
+                            "Excluir venda",
+                            JOptionPane.YES_NO_OPTION);
+
+            if (opcao == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Chama o BO para exluir a venda.");
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Selecione uma linha da tabela para poder excluir alguma venda.",
+                    "Exclusão de venda",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int linhaSelecionada = tblVendasEncontradas.getSelectedRow();
+
+        try {
+            Venda vendaSelecionada = listaVendas.get(linhaSelecionada);
+
+            CadastroVendaForm telaCadastro = 
+                    new CadastroVendaForm(vendaSelecionada);
+            telaCadastro.setVisible(true);
+            
+        } catch (ArrayIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Selecione uma linha da tabela para poder editar alguma venda.",
+                    "Alteração de venda",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -316,8 +378,8 @@ public class ConsultaVendasForm extends javax.swing.JFrame {
     private javax.swing.JTextField txtNomeCliente;
     private javax.swing.JFormattedTextField txtNumero;
     // End of variables declaration//GEN-END:variables
-    
-    private class ModeloTabelaVenda extends AbstractTableModel{
+
+    private class ModeloTabelaVenda extends AbstractTableModel {
 
         @Override
         public int getRowCount() {
@@ -332,54 +394,52 @@ public class ConsultaVendasForm extends javax.swing.JFrame {
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             Venda vendaAtual = listaVendas.get(rowIndex);
-            if(columnIndex==0){
+            if (columnIndex == 0) {
                 return vendaAtual.getNumero();
-            }else if(columnIndex==1){
-                SimpleDateFormat formatador = 
-                        new SimpleDateFormat("dd/MM/yyyy");
+            } else if (columnIndex == 1) {
+                SimpleDateFormat formatador
+                        = new SimpleDateFormat("dd/MM/yyyy");
                 return formatador.format(vendaAtual.getData());
-            }else if(columnIndex==2){
+            } else if (columnIndex == 2) {
                 return vendaAtual.getNomeCliente();
-            }else if(columnIndex==3){
+            } else if (columnIndex == 3) {
                 return vendaAtual.getCpfCliente();
-            }else if(columnIndex==4){
+            } else if (columnIndex == 4) {
                 String formaPagamento = "";
-                if(vendaAtual.getFormaPagamento().equals("AV")){
+                if (vendaAtual.getFormaPagamento().equals("AV")) {
                     formaPagamento = "Dinheiro";
-                }else if(vendaAtual.getFormaPagamento().equals("CC")){
+                } else if (vendaAtual.getFormaPagamento().equals("CC")) {
                     formaPagamento = "Cartão de Crédito";
-                }else if(vendaAtual.getFormaPagamento().equals("CD")){
+                } else if (vendaAtual.getFormaPagamento().equals("CD")) {
                     formaPagamento = "Cartão de Débito";
-                }else if(vendaAtual.getFormaPagamento().equals("CH")){
+                } else if (vendaAtual.getFormaPagamento().equals("CH")) {
                     formaPagamento = "Cheque";
                 }
                 return formaPagamento;
-            }else{
-                DecimalFormat formatador = 
-                        new DecimalFormat("#,##0.00");
+            } else {
+                DecimalFormat formatador
+                        = new DecimalFormat("#,##0.00");
                 return formatador.format(vendaAtual.getValor());
-            }           
+            }
         }
-        
+
         @Override
         public String getColumnName(int coluna) {
-            if(coluna==0){
+            if (coluna == 0) {
                 return "Número";
-            }else if(coluna==1){
+            } else if (coluna == 1) {
                 return "Data";
-            }else if(coluna==2){
+            } else if (coluna == 2) {
                 return "Nome do cliente";
-            }else if(coluna==3){
+            } else if (coluna == 3) {
                 return "CPF do cliente";
-            }else if(coluna==4){
+            } else if (coluna == 4) {
                 return "Forma de pagamento";
-            }else{
+            } else {
                 return "Valor";
             }
         }
-        
-    }
-    
 
+    }
 
 }
